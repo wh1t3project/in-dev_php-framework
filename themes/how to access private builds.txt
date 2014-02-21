@@ -2,6 +2,6 @@ Hello!
 
 If you reading this, that mean that you are interested in our project!
 "Private builds" are folders or codes that cannot be published on request of the author or admins.
-To access them, you need a auth code. To enter it got to this page: http://wh1t3project.dyndns.org:8080/private-builds
+To access them, you need to be a member. If you are go to this URL and log in: https://wh1t3project.dyndns.org/filemanager
 
-You can request an auth code by contacting an admin but you must be a member to get approval. Start today and contact us!
+If you are not a member, you can contact us to become one!
