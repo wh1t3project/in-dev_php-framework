@@ -2,6 +2,6 @@ Hello!
 
 If you reading this, that mean that you are interested in our project and this is great!
 "Private builds" are folders or codes that cannot be published on request of the author or admins.
-To access them, you need to be a member. If you are, go to this URL and log in: https://wh1t3project.dyndns.org/filemanager
+To access them, you need to be a member. If you are, go to this URL and log in: https://wh1t3project.dyndns.org/private
 
 If you are not a member, you can contact us to become one!
