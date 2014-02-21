@@ -1,0 +1,5 @@
+log level for config:
+1: Fatal
+2: Critical
+3: Warning
+4: Normal
