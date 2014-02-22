@@ -14,10 +14,10 @@ $CONFIG['sql_user']			= '';
 $CONFIG['sql_pass']			= '';
 $CONFIG['sql_host']			= '';
 $CONFIG['sql_db']			= '';
-$CONFIG['app_location'] 	= '/newengine';
-$CONFIG['app_real_location']= 'D:\SSD\Programs\wamp\www\newengine';
+$CONFIG['app_location'] 	= '/framework';
+$CONFIG['app_real_location']= 'D:\SSD\Documents\GitHub\in-dev_php-framework';
 $CONFIG['default_document'] = 'index';
-$CONFIG['theme']			= "oli";
+$CONFIG['theme']			= "oliwez";
 $CONFIG['lang']				= "fr";
 $CONFIG['timezone']			= 'America/Montreal';
 

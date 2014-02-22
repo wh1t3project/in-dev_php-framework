@@ -1,7 +1,5 @@
 <?php
 
-TODO: FIX CUSTOM LOOP FOR HANDLING URL
-
 DEFINE ('INSCRIPT',"1");
 require 'config.php'; // Config file
 if ($CONFIG['debug'] === true) {error_reporting(E_ALL);}
@@ -58,51 +56,53 @@ if ($TEMP['docpath'] !== "/") {
 	}
 }
 kernel_log("WEB-URL: ". $TEMP['docpath']);
-include ("docname.inc.php");
-if ($TEMP['docpath'] == "/") {
-	define ('DOCPATH',"/".$CONFIG['default_document']);
-	
-	$THEME['page_title'] = $DOCNAME[$CONFIG['default_document']];
-	kernel_log("Sent DEFAULT document");
-} elseif (file_exists(".".$TEMP['docpath'].'.html')) {
-	define ('DOCPATH',$TEMP['docpath']);
-	
-	preg_match('/(?!.*\/).*/',DOCPATH,$TEMP['docname']); // Get the file name
-	define ('DOCNAME',$TEMP['docname'][0]);
-	$THEME['page_title'] = $DOCNAME[DOCNAME];
-	kernel_log("Sent document '". DOCNAME ."'");
-
-} else { 
-	kernel_log ("File ". $TEMP['docpath'] ." not found. Sent 404",4);
-	define('DOCPATH','/404'); 
-	define('DOCNAME','404'); 
-	$THEME['page_title'] = $DOCNAME[DOCNAME];
-	
-}
-
-kernel_vartemp_clear();
-// System is ready and all modules are initialized. Booting up and loading content.
-kernel_event_trigger("STARTUP");
 $TEMP['show_page'] = false;
+$i = kernel_override_url();
 while (true) {
-	$i = kernel_override_url();
-	static $index = 0;
-		if ($i['TYPE'][$index] === 2) {
-			if (DOCPATH === $i['URL'][$index]) { include_once $i['SCRIPT'][$index];}
-		} elseif($i['TYPE'][$index] === 1) {
-			if (! stripos(DOCPATH ."/",$i['URL'][$index]."/") !== 0) { include_once $i['SCRIPT'][$index];}
-		} elseif ($i['URL'][$index] == null ) { $TEMP['show_page'] = true; break;}
-	$index++;
+	static $i2 = 0;
+	if (! isset ($i['TYPE'][$i2])) {$TEMP['show_page'] = true; unset ($i); break;}
+		if ($i['TYPE'][$i2] === 2) {
+			if ($TEMP['docpath'] === $i['URL'][$i2]) {include_once $i['SCRIPT'][$i2]; kernel_log("Script ".$i['SCRIPTNAME'][$i2]." executed with URL ".$i['URL'][$i2]." using normal mode"); break;}
+		} elseif($i['TYPE'][$i2] === 1) {
+			if (substr($TEMP['docpath'] . "/", 0, strlen($i['URL'][$i2]."/")) === $i['URL'][$i2]."/") { $i['URL'][$i2]; include_once $i['SCRIPT'][$i2]; kernel_log("Script ".$i['SCRIPTNAME'][$i2]." executed with URL ".$i['URL'][$i2]." using explicit mode"); break;}
+		}
+	$i2++;
 }
 if ($TEMP['show_page'] === true) { 
-unset ($TEMP['show_page']);
-kernel_log("Using theme '".$CONFIG['theme']."'");
-include_once ($THEME['location']."/header.php");
-kernel_event_trigger("SHOWHEADER");
-include_once(".". DOCPATH .".html");
-kernel_event_trigger("SHOWCONTENT");
-include_once ($THEME['location']."/footer.php");
-kernel_event_trigger("SHOWFOOTER");
+	unset ($TEMP['show_page']);
+	include ("docname.inc.php");
+
+	if ($TEMP['docpath'] == "/") {
+		define ('DOCPATH',"/".$CONFIG['default_document']);
+		
+		$THEME['page_title'] = $DOCNAME[$CONFIG['default_document']];
+		kernel_log("Sent DEFAULT document");
+	} elseif (file_exists(".".$TEMP['docpath'].'.html')) {
+		define ('DOCPATH',$TEMP['docpath']);
+		
+		preg_match('/(?!.*\/).*/',DOCPATH,$TEMP['docname']); // Get the file name
+		define ('DOCNAME',$TEMP['docname'][0]);
+		$THEME['page_title'] = $DOCNAME[DOCNAME];
+		kernel_log("Sent document '". DOCNAME ."'");
+
+	} else { 
+		kernel_log ("File ". $TEMP['docpath'] ." not found. Sent 404",4);
+		define('DOCPATH','/404'); 
+		define('DOCNAME','404'); 
+		$THEME['page_title'] = $DOCNAME[DOCNAME];
+		
+	}
+
+	kernel_vartemp_clear();
+	// System is ready and all modules are initialized. Booting up and loading content.
+	kernel_event_trigger("STARTUP");
+	kernel_log("Using theme '".$CONFIG['theme']."'");
+	include_once ($THEME['location']."/header.php");
+	kernel_event_trigger("SHOWHEADER");
+	include_once(".". DOCPATH .".html");
+	kernel_event_trigger("SHOWCONTENT");
+	include_once ($THEME['location']."/footer.php");
+	kernel_event_trigger("SHOWFOOTER");
 }
 kernel_log("Shutting down...");
 kernel_event_trigger("SHUTDOWN");
