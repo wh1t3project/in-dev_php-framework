@@ -17,7 +17,6 @@ $RECYCLE.BIN/
 
 test/
 themes/oliwez/
-modules/*
 todo*
 debug.log
 panic.log
