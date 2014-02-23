@@ -1,11 +1,30 @@
 <?php
-// Kernel bootloader
+// Kernel bootloader. 
+/* Load all kernel modules
 
-// Since there are critical depencies, we cannot load all the kernel module using a generic listing.
-// Instead, we load each module seperatly with a manual 'include'. This also prevent problems if 
+ Copyright (C) 2014  Gaël Stébenne (alias Wh1t3c0d3r)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+	
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
+// Note about how the kernel works:
+// Since there are critical dependencies, we cannot load all the kernel modules using a generic listing.
+// Instead, we load each module separately with a manual 'include'. This also prevent problems if 
 // someone put a module in the directory by error because it won't be loaded at all.
 
 // Core functions. DO NOT ALTER!
+if (! DEFINED('INSCRIPT')) {echo 'Direct access denied'; exit(1);}
 
 if ($CONFIG['debug_panic'] === FALSE and file_exists($GLOBALS['CONFIG']['app_real_location']."/panic.log")) {
 	echo "Kernel panic as been raised and 'debug_panic' is disabled. Cannot execute.";
@@ -44,7 +63,7 @@ function kernel_log($var1 = null,$var2 = null) {
 	4: Warning
 	3: Critical
 	2: Fatal (module may crash)
-	1: Panic (Kernel will crash, log will be written even if debug is disabled)
+	1: Panic (Kernel will crash, log will be written to panic.log even if debug is disabled.)
 */
 	$callinfo = debug_backtrace();
 	$file = $callinfo[0]['file'];

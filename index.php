@@ -1,5 +1,22 @@
 <?php
+// Index file. 
+/* Load kernel and modules, show content and take care of URL override
 
+ Copyright (C) 2014  Gaël Stébenne (alias Wh1t3c0d3r)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+	
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
 DEFINE ('INSCRIPT',"1");
 require 'config.php'; // Config file
 if ($CONFIG['debug'] === true) {error_reporting(E_ALL);}
@@ -62,9 +79,9 @@ while (true) {
 	static $i2 = 0;
 	if (! isset ($i['TYPE'][$i2])) {$TEMP['show_page'] = true; unset ($i); break;}
 		if ($i['TYPE'][$i2] === 2) {
-			if ($TEMP['docpath'] === $i['URL'][$i2]) {include_once $i['SCRIPT'][$i2]; kernel_log("Script ".$i['SCRIPTNAME'][$i2]." executed with URL ".$i['URL'][$i2]." using normal mode"); break;}
+			if ($TEMP['docpath'] === $i['URL'][$i2]) {unset ($i); kernel_log("Executing script ".$i['SCRIPTNAME'][$i2]." with URL ".$i['URL'][$i2]." using explicit mode"); include_once $i['SCRIPT'][$i2]; break;}
 		} elseif($i['TYPE'][$i2] === 1) {
-			if (substr($TEMP['docpath'] . "/", 0, strlen($i['URL'][$i2]."/")) === $i['URL'][$i2]."/") { $i['URL'][$i2]; include_once $i['SCRIPT'][$i2]; kernel_log("Script ".$i['SCRIPTNAME'][$i2]." executed with URL ".$i['URL'][$i2]." using explicit mode"); break;}
+			if (substr($TEMP['docpath'] . "/", 0, strlen($i['URL'][$i2]."/")) === $i['URL'][$i2]."/") {unset ($i); kernel_log("Executing script ".$i['SCRIPTNAME'][$i2]." with URL ".$i['URL'][$i2]." using normal mode"); $i['URL'][$i2]; include_once $i['SCRIPT'][$i2]; break;}
 		}
 	$i2++;
 }

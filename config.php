@@ -1,5 +1,24 @@
 <?php
+// Framework configuration file
+/* All the main and debugging settings are here.
+
+ Copyright (C) 2014  Gaël Stébenne (alias Wh1t3c0d3r)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 3 as published by
+    the Free Software Foundation.
+	
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
 if (! DEFINED('INSCRIPT')) {echo 'Direct access denied'; exit(1);}
+
 // System's variable. Change them at your own risk!
 $CONFIG['webroot']			= "webroot";
 $CONFIG['themes']			= "themes";
