@@ -96,17 +96,14 @@ if ($TEMP['show_page'] === true) {
 		kernel_log("Sent DEFAULT document");
 	} elseif (file_exists(".".$TEMP['docpath'].'.html')) {
 		define ('DOCPATH',$TEMP['docpath']);
-		
-		preg_match('/(?!.*\/).*/',DOCPATH,$TEMP['docname']); // Get the file name
-		define ('DOCNAME',$TEMP['docname'][0]);
-		$THEME['page_title'] = $DOCNAME[DOCNAME];
-		kernel_log("Sent document '". DOCNAME ."'");
+
+		$THEME['page_title'] = $DOCNAME[substr(DOCPATH,1)];
+		kernel_log("Sent document '". DOCPATH ."'");
 
 	} else { 
 		kernel_log ("File ". $TEMP['docpath'] ." not found. Sent 404",4);
 		define('DOCPATH','/404'); 
-		define('DOCNAME','404'); 
-		$THEME['page_title'] = $DOCNAME[DOCNAME];
+		$THEME['page_title'] = $DOCNAME[substr(DOCPATH,1)];
 		
 	}
 
