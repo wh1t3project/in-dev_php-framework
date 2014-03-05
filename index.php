@@ -79,9 +79,9 @@ while (true) {
 	static $i2 = 0;
 	if (! isset ($i['TYPE'][$i2])) {$TEMP['show_page'] = true; unset ($i); break;}
 		if ($i['TYPE'][$i2] === 2) {
-			if ($TEMP['docpath'] === $i['URL'][$i2]) {unset ($i); kernel_log("Executing script ".$i['SCRIPTNAME'][$i2]." with URL ".$i['URL'][$i2]." using explicit mode"); include_once $i['SCRIPT'][$i2]; break;}
+			if ($TEMP['docpath'] === $i['URL'][$i2]) {kernel_log("Executing script ".$i['SCRIPTNAME'][$i2]." with URL ".$i['URL'][$i2]." using explicit mode"); include_once $i['SCRIPT'][$i2]; unset ($i); break;}
 		} elseif($i['TYPE'][$i2] === 1) {
-			if (substr($TEMP['docpath'] . "/", 0, strlen($i['URL'][$i2]."/")) === $i['URL'][$i2]."/") {unset ($i); kernel_log("Executing script ".$i['SCRIPTNAME'][$i2]." with URL ".$i['URL'][$i2]." using normal mode"); $i['URL'][$i2]; include_once $i['SCRIPT'][$i2]; break;}
+			if (substr($TEMP['docpath'] . "/", 0, strlen($i['URL'][$i2]."/")) === $i['URL'][$i2]."/") {kernel_log("Executing script ".$i['SCRIPTNAME'][$i2]." with URL ".$i['URL'][$i2]." using normal mode"); $i['URL'][$i2]; include_once $i['SCRIPT'][$i2];unset ($i); break;}
 		}
 	$i2++;
 }
