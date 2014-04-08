@@ -147,6 +147,7 @@ kernel_log($KERNEL['version']." booting");
 require_once 'protected/init.php';
 require_once 'event_handler/init.php';
 require_once 'override/init.php';
+require_once 'sql/init.php';
 kernel_vartemp_clear();
 
 

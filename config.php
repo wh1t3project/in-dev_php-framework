@@ -29,10 +29,11 @@ $CONFIG['themes_mod']		= "modules";
 $CONFIG['modules']			= "modules";
 
 // User definable variables
-$CONFIG['sql_user']			= '';
-$CONFIG['sql_pass']			= '';
-$CONFIG['sql_host']			= '';
-$CONFIG['sql_db']			= '';
+$CONFIG['sql_user']			= 'testuser';
+$CONFIG['sql_pass']			= 'test';
+$CONFIG['sql_host']			= 'localhost';
+$CONFIG['sql_db']			= 'test2';
+$CONFIG['sql_drv']			= 'mysqli';
 $CONFIG['app_location'] 	= '/framework';
 $CONFIG['app_real_location']= 'D:\SSD\Documents\GitHub\in-dev_php-framework';
 $CONFIG['default_document'] = 'index';
