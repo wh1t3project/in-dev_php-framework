@@ -58,9 +58,10 @@ chdir ($CONFIG['app_real_location']."/".$CONFIG['webroot']);
 kernel_vartemp_clear();
 
 $INFO['web_location'] = $_SERVER['REQUEST_URI']; // Set current web location
-//$INFO['web_location'] = "/newengine/test/df"; // Uncomment to override web-location USEFULL WHEN DUBUGGING THROUGHT THE CONSOLE!!
+//$INFO['web_location'] = "/framework/"; // Uncomment to override web-location USEFULL WHEN DUBUGGING THROUGHT THE CONSOLE!!
 
-// Find docpath and docname
+// Filter WEB URL and find docpath
+$INFO['web_location'] = substr($INFO['web_location'], 0, strpos($INFO['web_location'],"?"));
 $TEMP['regex_app_location'] = str_replace("/","\\/",$CONFIG['app_location']);
 preg_match('/(?<='.$TEMP['regex_app_location'].').*/',$INFO['web_location'],$TEMP['docpath']); // Get the URL of the web location (with app_location as root)
 $TEMP['docpath'] = $TEMP['docpath'][0];
@@ -111,6 +112,7 @@ if ($TEMP['show_page'] === true) {
 	// System is ready and all modules are initialized. Booting up and loading content.
 	kernel_event_trigger("STARTUP");
 	kernel_log("Using theme '".$CONFIG['theme']."'");
+	include_once ($THEME['location']."/functions.php");
 	include_once ($THEME['location']."/header.php");
 	kernel_event_trigger("SHOWHEADER");
 	include_once(".". DOCPATH .".html");
