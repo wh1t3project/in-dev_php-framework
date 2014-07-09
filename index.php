@@ -2,38 +2,55 @@
 // Index file. 
 /* Load kernel and modules, show content and take care of URL override
 
- Copyright (C) 2014  Gaël Stébenne (alias Wh1t3c0d3r)
+Copyright 2014 Gaël Stébenne (alias Wh1t3c0d3r)
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-	
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+       http://www.apache.org/licenses/LICENSE-2.0
 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 */
 DEFINE ('INSCRIPT',"1");
+DEFINE ('framework_version','1.0 BETA');
 require 'config.php'; // Config file
 if ($CONFIG['debug'] === true) {error_reporting(E_ALL);}
+else {error_reporting(0);}
 session_start();
 $CONFIG['app_real_location'] = str_replace("\\","/",$CONFIG['app_real_location']); // Convert Windows path to unix for compatibility
-// Load and boot the kernel
-chdir ('Kernel');
-require_once 'boot.php';
-chdir ($CONFIG['app_real_location']);
-
-
 // Define system's dynamic variables
 $THEME['location'] 	= $CONFIG['themes']."/".$CONFIG['theme'];
 $THEME['css']		= $THEME["location"]."/".$CONFIG['themes_css']."/";
 $THEME['js']		= $THEME["location"]."/".$CONFIG['themes_js']."/";
 $THEME['img']		= $THEME["location"]."/".$CONFIG['themes_img']."/";
 $THEME['module']	= $THEME["location"]."/".$CONFIG['themes_mod']."/";
+
+// Config file auto-test
+$error = false;
+$error_array = array();
+if (!file_exists($CONFIG['webroot'])) {$error = true; array_push($error_array,'webroot');}
+if (!file_exists($CONFIG['themes'])) {$error = true; array_push($error_array,'themes');}
+if (!file_exists($CONFIG['app_real_location'])) {$error = true; array_push($error_array,'app_real_location');}
+if (!file_exists($CONFIG['modules'])) {$error = true; array_push($error_array,'modules');}
+
+if ($error === true) {header('HTTP/1.1 500 Internal Server Error');
+    echo "CONFIG FILE TEST FAILED! Failed check(s):<br/><br/>\r\n\r\n"; 
+    echo "-- The following settings are using non-existing folders --<br/>\r\n";
+    foreach ($error_array as $item) {echo $item."<br/>\r\n";} exit(1);
+}
+unset ($error);
+unset ($error_array);
+
+// Load and boot the kernel
+chdir ('Kernel');
+require_once 'boot.php';
+chdir ($CONFIG['app_real_location']);
+kernel_log ('Remote IP: '.$_SERVER['REMOTE_ADDR']);
 
 $INFO['modules'] = array();
 
@@ -90,7 +107,7 @@ if ($TEMP['render_page'] === true) {
 	unset ($TEMP['render_page']);
 	include ("docname.inc.php");
 
-	if ($TEMP['docpath'] == "/") {
+	if ($TEMP['docpath'] == "/" and file_exists('./'.$CONFIG['default_document'].'.html')) {
 		define ('DOCPATH',"/".$CONFIG['default_document']);
 		
 		$THEME['page_title'] = $DOCNAME[$CONFIG['default_document']];
@@ -101,44 +118,79 @@ if ($TEMP['render_page'] === true) {
 		$THEME['page_title'] = $DOCNAME[substr(DOCPATH,1)];
 		kernel_log("Sent document '". DOCPATH ."'");
 
-	} else {
-		if (file_exists("./404.html")) {
-			kernel_log ("File ". $TEMP['docpath'] ." not found. Sent 404",4);
-			define('DOCPATH','/404'); 
-			header("HTTP/1.0 404 Not Found");
-			$THEME['page_title'] = $DOCNAME[substr(DOCPATH,1)];
-		} else {
-			define('DOCPATH','/NO404'); 
-			header("HTTP/1.0 404 Not Found");
-		echo <<<OUT
+	} elseif (file_exists(".".$TEMP['docpath']) and is_dir(".".$TEMP['docpath']) and file_exists(".".$TEMP['docpath'].'/'.$CONFIG['default_document'].'.html')) {
+        define ('DOCPATH',$TEMP['docpath'].'/'.$CONFIG['default_document']);
+        
+        $THEME['page_title'] = $DOCNAME[substr(DOCPATH,1)];
+        kernel_log("Sent DEFAULT document for ".DOCPATH);
+    } else {
+        $file = $TEMP['docpath'];
+        $fileext = strrchr($file,'.');
+        if ($fileext !== false and substr($file,1,1) != "." and strlen($fileext) >= 2 and !preg_match('/(\!|"|\$|%|\?|&|\*|\(|\)|;|:|\^|<|>|`|´|\'|\+\=|,|«|»|{|}|\[|\]|¯|­)/i',$file)) {
+            foreach ($CONFIG['allowed_file_ext'] as $ext) {
+                if ($fileext == '.'.$ext and file_exists('.'.$file)){ 
+                    if ($CONFIG['debug'] === true and $CONFIG['debug_level'] !== 0){kernel_log("DEBUG IS ENABLED and debug_level is not set to zero. File download is not possible in that case. Please disable debug or set debug_level to 0",2); unset ($fileext); break;
+                    } else { $TEMP['IS_DOWNLOAD'] = true; kernel_log("Download of file '$file' requested"); unset($fileext); break;
+                           }
+                }
+            }
+        }
+        if (!isset ($TEMP['IS_DOWNLOAD'])) {
+            
+            if (file_exists("./404.html")) {
+                
+                kernel_log ("File ". $TEMP['docpath'] ." not found. Sent 404",4);
+                define('DOCPATH','/404'); 
+                header("HTTP/1.0 404 Not Found");
+                $THEME['page_title'] = $DOCNAME[substr(DOCPATH,1)];
+            } else {
+                define('DOCPATH','404'); 
+                header("HTTP/1.0 404 Not Found");
+            echo <<<OUT
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
 <html><head>
 <title>404 Not Found</title>
 </head><body>
 <h1>Not Found</h1>
 OUT;
-		echo "<p>The requested URL ". $CONFIG['app_location'].$TEMP['docpath'] ." was not found on this server.</p>";
-		echo <<<OUT
+            echo "<p>The requested URL ". $CONFIG['app_location'].$TEMP['docpath'] ." was not found on this server.</p>";
+            echo <<<OUT
 <p>Additionally, a 404 Not found error as occurred while trying to find the 404 document</p>
 <hr/>
 <p style="font-style:italic;">Generated by Wh1t3project's Pure PHP framework V 0.1 BETA</p>
 </body></html>
 OUT;
 
-		}
-	}
+            }
+	   }
+    }
+}
+        if (isset ($TEMP['IS_DOWNLOAD'])) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+            $mimetype = finfo_file($finfo, '.'.$TEMP['docpath']);
+            finfo_close($finfo);
+            header('Content-Type: $mimetype');
+            header('Content-Length: ' . filesize('.'.$TEMP['docpath']));
+            kernel_log ('Download of file '.$TEMP['docpath'].' started. File size: '.filesize('.'.$TEMP['docpath']).' Bytes');
+            readfile ('.'.$TEMP['docpath']);
+            kernel_log ('Download completed');
+            
+}
+else{
+
+            
 	kernel_vartemp_clear();
 	// System is ready and all modules are initialized. Booting up and loading content.
-	if (DOCPATH !== "/NO404") {
+	if (DOCPATH !== '404') {
 		kernel_event_trigger("STARTUP");
-		kernel_log("Using theme '".$CONFIG['theme']."'");
+		kernel_log('Using theme \''.$CONFIG['theme'].'\'');
 		include_once ($THEME['location']."/functions.php");
 		include_once ($THEME['location']."/header.php");
-		kernel_event_trigger("SHOWHEADER");
+		kernel_event_trigger('SHOWHEADER');
 		include_once(".". DOCPATH .".html");
-		kernel_event_trigger("SHOWCONTENT");
-		include_once ($THEME['location']."/footer.php");
-		kernel_event_trigger("SHOWFOOTER");
+		kernel_event_trigger('SHOWCONTENT');
+		include_once ($THEME['location'].'/footer.php');
+		kernel_event_trigger('SHOWFOOTER');
 	}
 }
 

@@ -2,20 +2,19 @@
 // Framework configuration file
 /* All the main and debugging settings are here.
 
- Copyright (C) 2014  Gaël Stébenne (alias Wh1t3c0d3r)
+Copyright 2014 Gaël Stébenne (alias Wh1t3c0d3r)
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-	
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+       http://www.apache.org/licenses/LICENSE-2.0
 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 */
 if (! DEFINED('INSCRIPT')) {echo 'Direct access denied'; exit(1);}
 
@@ -29,21 +28,22 @@ $CONFIG['themes_mod']		= "modules";
 $CONFIG['modules']			= "modules";
 
 // User definable variables
-$CONFIG['sql_user']			= 'testuser';
-$CONFIG['sql_pass']			= 'test';
-$CONFIG['sql_host']			= 'localhost';
-$CONFIG['sql_db']			= 'test2';
-$CONFIG['sql_drv']			= 'mysqli';
-$CONFIG['app_location'] 	= '/framework';
-$CONFIG['app_real_location']= 'D:\SSD\Documents\GitHub\in-dev_php-framework';
+$CONFIG['sql_user']			= '';
+$CONFIG['sql_pass']			= '';
+$CONFIG['sql_host']			= '';
+$CONFIG['sql_db']			= '';
+$CONFIG['sql_drv']			= '';
+$CONFIG['app_location'] 	= '/';
+$CONFIG['app_real_location']= '';
 $CONFIG['default_document'] = 'index';
-$CONFIG['theme']			= "oliwez";
+$CONFIG['theme']			= "default";
 $CONFIG['lang']				= "fr";
 $CONFIG['timezone']			= 'America/Montreal';
+$CONFIG['allowed_file_ext'] = array('jpg','png','gif','txt'); //File's extensions allowed to be downloaded directly
 
 // Debugging
-$CONFIG['debug']			= true;
-$CONFIG['debug_panic']		= true; // Run if panic raised? Note that this setting is applied even if debug is disabled
+$CONFIG['debug']			= false;
+$CONFIG['debug_panic']		= true; // Run even if panic was raised before? Note that this setting is applied even if debug is disabled
 $CONFIG['debug_file']		= "/debug.log";
-$CONFIG['debug_level']		= 4; // Does not have any effect if debug is disabled
+$CONFIG['debug_level']		= 0; // Does not have any effect if debug is disabled
 ?>

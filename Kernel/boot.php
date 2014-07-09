@@ -2,20 +2,19 @@
 // Kernel bootloader. 
 /* Load all kernel modules
 
- Copyright (C) 2014  Gaël Stébenne (alias Wh1t3c0d3r)
+Copyright 2014 Gaël Stébenne (alias Wh1t3c0d3r)
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License version 3 as published by
-    the Free Software Foundation.
-	
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+       http://www.apache.org/licenses/LICENSE-2.0
 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 */
 
 // Note about how the kernel works:
@@ -30,7 +29,6 @@ if ($CONFIG['debug_panic'] === FALSE and file_exists($GLOBALS['CONFIG']['app_rea
 	echo "Kernel panic as been raised and 'debug_panic' is disabled. Cannot execute.";
 	exit(9999);}
 	
-$KERNEL['version'] = "0.01 ALPHA";
 $TEMP = array();
 date_default_timezone_set($CONFIG['timezone']) or die ("Error while setting timezone. Please check config.");
 
@@ -66,6 +64,7 @@ function kernel_log($var1 = null,$var2 = null) {
 	1: Panic (Kernel will crash, log will be written to panic.log even if debug is disabled.)
 */
 	$callinfo = debug_backtrace();
+    
 	$file = $callinfo[0]['file'];
 	$prefix = null;
 	$prefix2 = null;
@@ -143,7 +142,7 @@ function kernel_log($var1 = null,$var2 = null) {
 	
 }
 
-kernel_log($KERNEL['version']." booting");
+kernel_log(framework_version." booting");
 require_once 'protected/init.php';
 require_once 'event_handler/init.php';
 require_once 'override/init.php';
